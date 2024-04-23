@@ -1,5 +1,7 @@
 using System.Data.SqlClient;
 using JetBrains.Annotations;
+using WebApplication2.AnimalServices;
+using WebApplication2.Models;
 using WebApplication2.Repositories;
 
 namespace TestProject1.Repositories;
@@ -53,18 +55,92 @@ public class AnimalRepositoryTest
     public void TestDb()
     {
         SetUp();
+        
     }
     
     [Fact]
-    public void GetAnimals()
+    public void GetAnimalsTest()
     {
+        SetUp();
         IAnimalRepository animalRepository = new AnimalRepository();
 
         int count = animalRepository.GetAnimals().Count;
         
         Assert.Equal(10, count);
     }
-    
-    
+
+
+
+    [Fact]
+    public void GetAnimalTest()
+    {
+        SetUp();
+        IAnimalRepository animalRepository = new AnimalRepository();
+        int id = 1;
+
+        AnimalDTO animalDto = animalRepository.GetAnimal(id);
+        
+        Assert.Equal("Lion", animalDto.Name);
+    }
+
+    [Fact]
+    public void GetAnimalsOrderedByNameTest()
+    {
+        SetUp();
+        string param = "name";
+        IAnimalRepository animalRepository = new AnimalRepository();
+        int count = animalRepository.GetAnimals().Count;
+
+
+        List<AnimalDTO> animalsOrderedByName = animalRepository.GetAnimalsOrderedBy(param).ToList();
+
+        int i = animalsOrderedByName.Count;
+        
+        Assert.Equal(count,i);
+    }
+
+
+    [Fact]
+    public void AddAnimalTest()
+    {
+        SetUp();
+        int oldAnimalsNumber = 10;
+        AnimalRepository animalRepository = new AnimalRepository();
+        AnimalDTO animalDto = new AnimalDTO("string name", "string description", "string category", "string area");
+
+        animalRepository.AddAnimal(animalDto);
+        int count = animalRepository.GetAnimals().Count;
+        
+        Assert.Equal(oldAnimalsNumber + 1 , count);
+    }
+
+
+
+    [Fact]
+    public void EditAnimalTestIfAnimalIsPresented()
+    {
+        SetUp();
+        var animalDto = new AnimalDTO(1,"changed", "changed", "changed", "changed");
+        IAnimalRepository animalRepository = new AnimalRepository();
+
+        animalRepository.EditAnimal(animalDto);
+        string name = animalRepository.GetAnimal(animalDto.Id).Name;
+        
+        
+        Assert.Equal("changed" , name);
+    }
+
+    [Fact]
+    public void DeleteAnimalTest()
+    {
+        SetUp();
+        int oldNumberAnimals = 10;
+        IAnimalRepository repository = new AnimalRepository();
+
+        repository.DeleteAnimal(1);
+        int count = repository.GetAnimals().Count;
+        
+        Assert.Equal(oldNumberAnimals - 1, count);
+    }
     
 }

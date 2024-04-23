@@ -15,7 +15,50 @@ public class AnimalsController
    {
       _animalService = animalService;
    }
+   [HttpPost]
+   public IResult AddAnimal(AnimalDTO animal)
+   {
+      _animalService.AddAnimal(animal);
+      return Results.Ok();
+   }
    
+
+   [HttpDelete]
+   public IResult DeleteAnimal(int id)
+   {
+      bool wasDeleted = _animalService.DeleteAnimal(id);
+      if (wasDeleted)
+      {
+         return Results.Ok();
+      }
+
+      return Results.NotFound();
+   }
+
+   [HttpPut]
+   public IResult EditAnimal(AnimalDTO animal)
+   {
+      bool wasEdit = _animalService.EditAnimal(animal);
+      if (wasEdit)
+      {
+         return Results.Ok();
+      }
+
+      return Results.NotFound();
+   }
+   
+   
+   [HttpGet]
+   public IResult GetAnimalsOrderedBy(string? param)
+   {
+      ICollection<AnimalDTO> animals = _animalService.GetAnimalsOrderedBy(param);
+      if (animals != null)
+      {
+         return Results.Ok(animals);
+      }
+
+      return Results.BadRequest();
+   }
    
    
 }

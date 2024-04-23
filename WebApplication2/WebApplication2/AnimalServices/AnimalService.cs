@@ -25,7 +25,20 @@ public class AnimalService : IAnimalService
 
     public ICollection<AnimalDTO> GetAnimalsOrderedBy(string param = "name")
     {
-        return _animalRepository.GetAnimalsOrderedBy(param);
+        if (param == null)
+        {
+            param = "name";
+        }
+        
+        switch (param.ToLower())
+        {
+            case "name":
+            case "description":
+            case "category":
+            case "area":
+                return _animalRepository.GetAnimalsOrderedBy(param);
+            default: return null;
+        }
     }
 
     public void AddAnimal(AnimalDTO animal)
@@ -54,4 +67,5 @@ public class AnimalService : IAnimalService
 
         return presented;
     }
+    
 }
